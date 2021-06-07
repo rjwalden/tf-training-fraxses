@@ -1,0 +1,52 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chainlink-api-{{ version_name }}
+  namespace: {{ namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: chainlink-api-{{ version_name }}
+  template:
+    metadata:
+      labels:
+        component: chainlink-api-{{ version_name }}
+    spec:
+      terminationGracePeriodSeconds: 10
+      imagePullSecrets:
+        - name: fraxses-reg-cred
+      containers:
+        - name: chainlink-api-img-{{ version_name }}
+          imagePullPolicy: Always
+          image: {{ image }}
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: fraxses-kf-svc-headless:9092
+            - name: FRAXSES_CLIENT_SECRET
+              value: kZXem8W4SVAwOHRi8qTn
+            - name: ENVIRONMENT
+              value: {{ environment }}
+            - name: WEB3_INFURA_PROJECT_ID           
+              value: {{ web3_infura_project_id }} 
+            - name: WEB3_INFURA_PROJECT_SECRET 
+              value: {{ web3_infura_project_secret }}
+            - name: WEB3_INFURA_MAINNET_WSS
+              value: {{ web3_infura_mainnet_wss }}
+            - name: WEB3_INFURA_MAINNET_HTTPS
+              value: {{ web3_infura_mainnet_https }}
+            - name: WEB3_INFURA_KOVAN_WSS
+              value: {{ web3_infura_kovan_wss }}          
+            - name: WEB3_INFURA_KOVAN_HTTPS
+              value: {{ web3_infura_kovan_https }}
+            - name: WALLET_PRIVATE_KEY_MAINNET
+              value: {{ wallet_private_key_mainnet }}
+            - name: WALLET_PRIVATE_KEY_KOVAN
+              value: {{ wallet_private_key_kovan }}
+          terminationMessagePath: "/dev/termination-log"
+          terminationMessagePolicy: File
+          resources:
+            requests:
+              memory: 1000Mi
+              cpu:  1500m

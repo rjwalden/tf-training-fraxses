@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tensorflow-predict-pvc
+  namespace: default
+spec:
+  storageClassName: fraxses-azuredisk-sc
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

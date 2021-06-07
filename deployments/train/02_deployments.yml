@@ -1,0 +1,64 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tensorflow-train
+  namespace: fraxses-fraxses-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: tensorflow-train
+  template:
+    metadata:
+      labels:
+        component: tensorflow-train
+    spec:
+      terminationGracePeriodSeconds: 10
+      imagePullSecrets:
+        - name: fraxses-reg-cred
+    spec:
+      volumes:
+        - name: fraxses-shared-vm
+          persistentVolumeClaim:
+            claimName: fraxses-common-shared-storage-pvc
+      containers:
+        - name: tensorflow-train-img
+          imagePullPolicy: Always
+          image: austpryb/train:001 
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: fraxses-kf-svc-headless:9092
+            - name: FRAXSES_CLIENT_SECRET
+              value: kZXem8W4SVAwOHRi8qTn
+            - name: ENVIRONMENT
+              value: development
+            - name: USER
+              value: '1001'
+          terminationMessagePath: "/dev/termination-log"
+          terminationMessagePolicy: File
+          resources:
+            requests:
+              memory: 1000Mi
+              cpu:  1500m
+          volumeMounts:
+            - name: fraxses-shared-vm
+              mountPath: /var/fraxses/shared/data
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 10
+      dnsPolicy: ClusterFirst
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 0
+        fsGroup: 0
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
