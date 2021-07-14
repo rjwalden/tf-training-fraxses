@@ -1,5 +1,6 @@
-#FROM tensorflow/tensorflow:latest 
-FROM python:3.8
+FROM rayproject/ray-ml:latest-cpu
+
+USER root
 
 RUN mkdir -p /usr/src/app
 
