@@ -1,0 +1,59 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: automl-tune
+  namespace: fraxses-fraxses-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: automl-tune
+  template:
+    metadata:
+      labels:
+        component: automl-tune
+    spec:
+      imagePullSecrets:
+        - name: fraxses-reg-cred
+      volumes:
+        - name: fraxses-shared-vm
+          persistentVolumeClaim:
+            claimName: fraxses-common-shared-storage-pvc
+      containers:
+        - name: automl-tune-img
+          imagePullPolicy: Always
+          image: rosenblattai/fraxses-automl
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: fraxses-kf-svc-headless:9092
+            - name: FRAXSES_CLIENT_SECRET
+              value: kZXem8W4SVAwOHRi8qTn
+            - name: ENVIRONMENT
+              value: development
+            - name: USER
+              value: '1001'
+          terminationMessagePath: "/dev/termination-log"
+          terminationMessagePolicy: File
+          resources:
+            requests:
+              memory: 1000Mi
+              cpu:  1500m
+          volumeMounts:
+            - name: fraxses-shared-vm
+              mountPath: /var/fraxses/shared/data
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 10
+      dnsPolicy: ClusterFirst
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 0
+        fsGroup: 0
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

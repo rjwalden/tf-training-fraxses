@@ -2,30 +2,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tensorflow-train
+  name: automl-serve
   namespace: fraxses-fraxses-dev
 spec:
   replicas: 1
   selector:
     matchLabels:
-      component: tensorflow-train
+      component: automl-serve
   template:
     metadata:
       labels:
-        component: tensorflow-train
+        component: automl-serve
     spec:
       terminationGracePeriodSeconds: 10
       imagePullSecrets:
         - name: fraxses-reg-cred
-    spec:
       volumes:
         - name: fraxses-shared-vm
           persistentVolumeClaim:
             claimName: fraxses-common-shared-storage-pvc
       containers:
-        - name: tensorflow-train-img
+        - name: automl-serve-img
           imagePullPolicy: Always
-          image: austpryb/train:001 
+          image: rosenblattai/fraxses-automl-serve
           env:
             - name: KAFKA_BOOTSTRAP_SERVERS
               value: fraxses-kf-svc-headless:9092
@@ -35,8 +34,6 @@ spec:
               value: development
             - name: USER
               value: '1001'
-          terminationMessagePath: "/dev/termination-log"
-          terminationMessagePolicy: File
           resources:
             requests:
               memory: 1000Mi
@@ -46,9 +43,7 @@ spec:
               mountPath: /var/fraxses/shared/data
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
-          imagePullPolicy: Always
       restartPolicy: Always
-      terminationGracePeriodSeconds: 10
       dnsPolicy: ClusterFirst
       securityContext:
         runAsUser: 1001
