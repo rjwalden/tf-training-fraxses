@@ -1,3 +1,7 @@
+koalas==1.8.1
+raydp==0.3.0
+pandas==1.1.4
+pyspark==3.0.3
 tox==3.14.6
 python-dotenv==0.12.0
 markdown==2.6.11
@@ -28,17 +32,13 @@ sphinxcontrib-htmlhelp==1.0.3
 sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==1.0.3
 sphinxcontrib-serializinghtml==1.1.4
-tqdm==4.54.0
 twine==3.2.0
 typing-extensions==3.7.4.3
 webencodings==0.5.1
 artifacts-keyring==0.3.1
-tensorflow==2.5.0
-tensorflow-serving-api==2.5.1
 sasl==0.2.1
 thrift==0.13.0
 thrift-sasl==0.3.0
 PyHive==0.6.1
 hdfs==2.5.8
 SQLAlchemy==1.4.15
-pandas==1.2.4
