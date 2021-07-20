@@ -18,4 +18,4 @@ COPY automl/tune /usr/src/app
 COPY automl/models /usr/src/app
 COPY automl/utils /usr/src/app
 
-ENTRYPOINT ["python", "/usr/src/app/app.py"]
+ENTRYPOINT ["python", "tune.py"]
