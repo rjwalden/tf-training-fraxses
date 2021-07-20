@@ -56,8 +56,9 @@ def tune_model(**config):
         ray.client(address=f'{name}:{port}').connect()
         logging.debug(f'Connected to remote Ray cluster @{name}:{port}')
     except Exception as e:
-        logging.error(str(e))
-        raise Exception(f'Failed to connect to remote Ray cluster @{name}:{port}. ' + str(e))
+        logging.error(f'Failed to connect to remote Ray cluster @{name}:{port}. ' + str(e))
+        logging.debug('Running Ray locally.')
+        ray.init(local_mode=True)
 
     if get_latest_version(config['model_type'], config['organization'], config['dataset']):
         logging.debug('fine tuning model')
