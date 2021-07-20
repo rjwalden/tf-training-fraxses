@@ -16,7 +16,8 @@ def prediction():
 
     if get_latest_version(model_type, organization, dataset):
         try:
-            model = eval(model_type)(organization, dataset)
+            config = {'organization': organization, 'dataset': dataset, 'index': request.args.get('index')}
+            model = eval(model_type)(config)
         except Exception as e:
             return str(e)
         else:
@@ -28,3 +29,4 @@ def prediction():
 if __name__ == '__main__':
    app.run(debug = True)
    # curl 'localhost:5000/prediction?model_type=AnomalyDetector&dataset=odc_ap_demo_020&organization=rosenblatt'
+   # curl 'localhost:5000/prediction?model_type=AnomalyDetector&dataset=odc_ap_demo_020&organization=rosenblatt&index=0'
