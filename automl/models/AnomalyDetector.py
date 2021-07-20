@@ -369,14 +369,13 @@ class AnomalyDetector(FraxsesModel):
         '''Make predictions using the latest model'''
         samples, _ = self.format_data(mode='predict')
         preds = self.model.predict(samples, verbose=VERBOSE)
-        error = np.mean((preds - samples)**2)
+        error = np.mean((preds - samples)**2, axis=1)
+        error = error.reshape((-1))
         anomalies = error > self.threshold 
-        self.logger.debug("Number of anomaly samples: ", np.sum(anomalies))
-        
-        # TODO: verify below
-        # anomalous_data_indices = []
-        # for data_idx in range(self.window - 1, len(samples) - self.window + 1):
-        #     if np.all(anomalies[data_idx - self.window + 1 : data_idx]):
-        #         anomalous_data_indices.append(data_idx)
-        # self.df['is_anomaly'] = 0
-        # self.df['is_anomaly'].iloc[anomalous_data_indices] = 1
+        self.logger.debug("number of anomalies detected: ", np.sum(anomalies))
+        anomalous_data_indices = []
+        for data_idx in range(self.window - 1, len(self.df) - self.window + 1):
+            if np.all(anomalies[data_idx - self.window + 1 : data_idx]):
+                anomalous_data_indices.append(data_idx)
+        self.df['is_anomaly'] = 0
+        self.df['is_anomaly'].iloc[anomalous_data_indices] = 1
