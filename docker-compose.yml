@@ -1,12 +1,19 @@
 version: '3'
 services:
+  automl:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.automl
+    env_file:
+      - .env
+    image: rosenblattai/fraxses-automl
   tune:
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile.tune
     env_file:
       - .env
-    image: rosenblattai/fraxses-automl
+    image: rosenblattai/fraxses-automl-tune
   serve:
     build:
       context: .

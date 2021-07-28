@@ -1,18 +1,6 @@
-FROM python:3.8-slim-buster
-
-RUN mkdir -p /usr/src/app
-
-RUN apt-get update -y && apt-get update \
-  && apt-get install -y --no-install-recommends \
-  curl
-  
-WORKDIR /usr/src/app
+FROM rosenblattai/fraxses-automl:latest
 
 COPY requirements/serve.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
-COPY automl/serve /usr/src/app
-COPY automl/models /usr/src/app
-COPY automl/utils /usr/src/app
-
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+CMD [ "python", "serve.py"]
