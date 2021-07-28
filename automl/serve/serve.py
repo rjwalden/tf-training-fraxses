@@ -3,7 +3,7 @@ from flask import Flask, request
 app = Flask(__name__)
 
 from models import *
-from utils.helpers import get_latest_version
+from utils.helpers import get_latest_version, ray_connect
 
 @app.route('/prediction', methods=['GET', 'POST'])
 def prediction():
@@ -21,6 +21,7 @@ def prediction():
         except Exception as e:
             return str(e)
         else:
+            ray_connect()
             model.predict()
             return model.df.to_json(orient='records')
     return  f'{organization}/{dataset}/{model_type} does not exist, ' + \

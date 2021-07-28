@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from python_fraxses_wrapper.error import WrapperError
 from python_fraxses_wrapper.response import Response, ResponseResult
 from utils.local_settings import * 
+from utils.heplers import ray_connect
 
 # import pyspark
 import ray
@@ -48,17 +49,8 @@ def tune_model(**config):
         model_class = eval(config['model_type'])
     except:
         raise Exception(f'{config["model_type"]} is not a valid model_type.')
-    
-    # ray.init(local_mode=True)
-    try:
-        name = 'tensorflow-train-cluster-ray-head'
-        port = 10001
-        ray.client(address=f'{name}:{port}').connect()
-        logging.debug(f'Connected to remote Ray cluster @{name}:{port}')
-    except Exception as e:
-        logging.error(f'Failed to connect to remote Ray cluster @{name}:{port}. ' + str(e))
-        logging.debug('Running Ray locally.')
-        ray.init(local_mode=True)
+
+    ray_connect()
 
     if get_latest_version(config['model_type'], config['organization'], config['dataset']):
         logging.debug('fine tuning model')
