@@ -1,9 +1,10 @@
 import re
 import os
+import ray
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
-from local_settings import MODEL_STORAGE
+from utils.local_settings import MODEL_STORAGE
 
 def get_latest_version(model_type:str, organization:str, dataset:str) -> int:
     '''
@@ -31,3 +32,13 @@ def get_latest_version(model_type:str, organization:str, dataset:str) -> int:
         logging.debug(f'{model_path}/{model_type} has not been trained before')
     logging.debug(f'{model_path}/{model_type} latest version: {latest_version}')
     return latest_version
+
+
+def ray_connect(name:str = 'automl-cluster-ray-head', port:str = 10001):
+    try:
+        ray.client(address=f'{name}:{port}').connect()
+        logging.debug(f'Connected to remote Ray cluster @{name}:{port}')
+    except Exception as e:
+        logging.error(f'Failed to connect to remote Ray cluster @{name}:{port}. ' + str(e))
+        logging.debug('Running Ray locally.')
+        ray.init(local_mode=True)
