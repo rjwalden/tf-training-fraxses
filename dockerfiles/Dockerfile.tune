@@ -1,5 +1,7 @@
 FROM rosenblattai/fraxses-automl:latest
 
+COPY automl/tune .
+
 COPY requirements/tune.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
