@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from python_fraxses_wrapper.error import WrapperError
 from python_fraxses_wrapper.response import Response, ResponseResult
 from utils.local_settings import * 
-from utils.heplers import ray_connect
+from utils.helpers import ray_connect
 
 # import pyspark
 import ray
