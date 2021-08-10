@@ -112,6 +112,10 @@ class FraxsesModel(object):
         self.logger.debug(f'saving model to {model_path}')
         tf.saved_model.save(self.model, model_path)
 
+    def get_df(self) -> pd.DataFrame:
+        '''Returns the current DataFrame'''
+        return self.df
+
     @abc.abstractmethod
     def build_model(self):
         '''Builds model'''

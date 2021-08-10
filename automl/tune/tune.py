@@ -1,14 +1,3 @@
-# Standard
-from __future__ import print_function
-import os
-import re
-import abc
-import json
-import time
-import threading
-from datetime import datetime
-import requests
-
 from python_fraxses_wrapper.wrapper import FraxsesWrapper
 from dataclasses import dataclass
 from python_fraxses_wrapper.error import WrapperError
@@ -54,7 +43,7 @@ def tune_model(**config):
 
     if get_latest_version(config['model_type'], config['organization'], config['dataset']):
         logging.debug('fine tuning model')
-        # m = model_class.remote(config)
+        m = model_class.remote(config)
         # error = m.train.remote()
         # analysis = ray.get(error)
         # m.cleanup.remote()

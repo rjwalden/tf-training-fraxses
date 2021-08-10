@@ -1,7 +1,7 @@
 import ray
 import numpy as np
 import pandas as pd
-import FraxsesModel
+from .FraxsesModel import FraxsesModel
 import tensorflow as tf 
 from inspect import signature
 from utils.local_settings import VERBOSE

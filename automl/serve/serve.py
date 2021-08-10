@@ -1,6 +1,10 @@
 import os
+import ray
 from flask import Flask, request
 app = Flask(__name__)
+
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 from models import *
 from utils.helpers import get_latest_version, ray_connect
@@ -17,13 +21,17 @@ def prediction():
     if get_latest_version(model_type, organization, dataset):
         try:
             config = {'organization': organization, 'dataset': dataset, 'index': request.args.get('index')}
-            model = eval(model_type)(config)
-        except Exception as e:
-            return str(e)
-        else:
             ray_connect()
-            model.predict()
-            return model.df.to_json(orient='records')
+            model_class = eval(model_type)
+            model = model_class.remote(config)
+        except Exception as e:
+            logging.debug('failed to init')
+            return str(e) 
+        else:
+            model.predict.remote()
+            df_obj = model.get_df.remote()
+            df = ray.get(df_obj)
+            return df.to_json(orient='records')
     return  f'{organization}/{dataset}/{model_type} does not exist, ' + \
         'please use our training api to create one.'
 
