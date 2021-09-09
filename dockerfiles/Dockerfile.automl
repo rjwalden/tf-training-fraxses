@@ -8,7 +8,6 @@ RUN sudo mkdir -p /usr/src/automl \
   && sudo apt-get install -y --no-install-recommends curl gnupg unixodbc-dev libssl-dev python3-dev python3-venv python3-pip python3-setuptools libzbar-dev libc-dev unixodbc-dev unixodbc libpq-dev libsasl2-dev gcc python-dev sasl2-bin libsasl2-2 libsasl2-dev libsasl2-modules \
   && pip install python_fraxses_wrapper-0.4.0-py3-none-any.whl
 
-COPY automl/models /usr/src/automl/models/
-COPY automl/utils /usr/src/automl/utils/
+COPY automl/models.py /usr/src/automl/
 
 WORKDIR /usr/src/automl

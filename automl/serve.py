@@ -1,4 +1,10 @@
-import os
+import os 
+import sys
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.join(dir_path, '/models'))
+sys.path.append(os.path.join(dir_path, '/utils'))
+
 import ray
 from flask import Flask, request
 app = Flask(__name__)
@@ -6,7 +12,7 @@ app = Flask(__name__)
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
-from models import *
+from models import AnomalyDetector
 from utils.helpers import get_latest_version, ray_connect
 
 @app.route('/prediction', methods=['GET', 'POST'])
@@ -22,8 +28,8 @@ def prediction():
         try:
             config = {'organization': organization, 'dataset': dataset, 'index': request.args.get('index')}
             ray_connect()
-            model_class = eval(model_type)
-            model = model_class.remote(config)
+            # model_class = eval(model_type)
+            model = AnomalyDetector.remote(config)
         except Exception as e:
             logging.debug('failed to init')
             return str(e) 

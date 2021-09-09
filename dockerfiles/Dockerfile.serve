@@ -5,6 +5,4 @@ COPY requirements/serve.txt requirements.txt
 RUN --mount=type=cache,target=/root/.cache \
     pip install -r requirements.txt
 
-COPY automl/serve.py serve.py
-
-CMD [ "python", "serve.py"]
+ENTRYPOINT [ "python", "serve.py"]
