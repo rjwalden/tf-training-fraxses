@@ -1,10 +1,25 @@
 version: '3'
 services:
-  train:
+  automl:
     build:
       context: .
-    volumes:
-      - ./app:/usr/src/app
+      dockerfile: dockerfiles/Dockerfile.automl
     env_file:
       - .env
     image: rosenblattai/fraxses-automl
+  tune:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.tune
+    env_file:
+      - .env
+    image: rosenblattai/fraxses-automl-tune
+  serve:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.serve
+    env_file:
+      - .env
+    image: rosenblattai/fraxses-automl-serve
+    ports:
+      - "5000:5000"
